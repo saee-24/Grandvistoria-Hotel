@@ -1,0 +1,185 @@
+<html>
+<head>
+<title>Grandvistoria Hotel</title>
+<link rel="stylesheet" href="style.css">
+<style>
+   header{background-image: url('E:\Documents\web programming\Hotel booking\Hotel GrandVistoria.png');
+  
+    background-size: 20% 10; /* Width is 20%, height auto */
+    
+            
+            /* Optional: Adjust the background size */
+            background-size: cover; /* This will make the image cover the entire page */
+            
+            /* Optional: Ensure the background stays in place when scrolling */
+            background-attachment: fixed;
+            
+            /* Optional: Set the background position */
+            background-position: center center; /* Centers the image */
+            
+            /* Optional: Set the background repeat (no-repeat or repeat) */
+            background-repeat: no-repeat; /* This prevents the image from repeating */
+            background-color:#40E0D0;
+}
+   body {
+      font-family: Ariel, sans-serif;
+      text-align: center;
+      margin: 50px;
+        }
+        .container {
+            background:#40E0D0;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            max-width: 500px;
+            margin: auto;
+        }
+        label, select, input, button {
+            display: block;
+            width: 100%;
+            margin: 10px 0;
+        }
+        button {
+            background-color: #40E0D0;
+            color: black;
+            padding: 10px;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        button:hover {
+            background-color: #40E0D0;
+        }
+        #summary {
+            margin-top: 20px;
+            font-weight: bold;
+        }
+        nav {
+            margin-bottom: 20px;
+        }
+        nav a {
+            margin: 0 15px;
+            text-decoration: none;
+            color: #007BFF;
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+<header>
+<img src="E:\Documents\web programming\Hotel booking\Hotel GrandVistoria.png"  height="400">
+    <nav>
+        <a href="file:///E:/Documents/web%20programming/Hotel%20booking/Hotel%20Grandvistoria.html">Home</a>
+        <a href="file:///E:/Documents/web%20programming/Hotel%20booking/Hotel%20Grandvistoria%20About.html">About</a>
+        <a href="file:///E:/Documents/web%20programming/Hotel%20booking/Hotel%20Grandvistoria%20Booking%20Page.html">Booking</a>
+        <a href="file:///E:/Documents/web%20programming/Hotel%20booking/Hotel%20Grandvistoria%20Room.html">Rooms </a>
+        <a href="file:///E:/Documents/web%20programming/Hotel%20booking/Hotel%20Grandvistoria%20Wine-N-Dine.html">Wine-N-Dine</a>
+        <a href="file:///E:/Documents/web%20programming/Hotel%20booking/Hotel%20Grandvistoria%20Packages.html">Packages</a>
+    </nav>
+<p>Booking</p>
+<form id="bookingForm">
+            <label for="clientName">Full Name:</label>
+            <input type="text" id="clientName" required>
+            
+            <label for="contact">Contact Number:</label>
+            <input type="tel" id="contact" required pattern="[0-9]{10}" placeholder="Enter 10-digit number">
+            
+            <label for="payment">Payment Method:</label>
+            <select id="payment">
+                <option value="Credit Card">Credit Card</option>
+                <option value="Debit Card">Debit Card</option>
+                <option value="PayPal">PayPal</option>
+            </select>
+            
+            <label for="checkin">Check-in Date:</label>
+            <input type="date" id="checkin" required>
+            
+            <label for="checkout">Check-out Date:</label>
+            <input type="date" id="checkout" required>
+
+            <label for="roomType">Select Room:</label>
+            <select id="roomType">
+                <option value="Standard" data-price="8000">Standard - ₹8000/night</option>
+                <option value="Deluxe" data-price="12000">Deluxe - ₹12000/night</option>
+                <option value="Suite" data-price="20000">Suite - ₹20000/night</option>
+            </select>
+
+            <label>Additional Services:</label>
+            <input type="checkbox" class="service" value="1600"> Breakfast (₹1600/day)<br>
+            <input type="checkbox" class="service" value="4000"> Spa (₹4000/day)<br>
+            <input type="checkbox" class="service" value="2500"> Airport Transport (₹2500)
+        </form>
+        
+        <button id="calculateBtn">Calculate Total</button>
+        <button id="confirmBtn">Confirm Booking</button>
+        
+        <div id="summary"></div>
+    </div>
+
+    <script>
+        document.getElementById("calculateBtn").addEventListener("click", calculateBooking);
+        document.getElementById("confirmBtn").addEventListener("click", confirmBooking);
+
+        function calculateBooking() {
+            let roomSelect = document.getElementById("roomType");
+            let roomPrice = parseInt(roomSelect.options[roomSelect.selectedIndex].getAttribute("data-price"));
+            let checkinDate = new Date(document.getElementById("checkin").value);
+            let checkoutDate = new Date(document.getElementById("checkout").value);
+            let nights = (checkoutDate - checkinDate) / (1000 * 60 * 60 * 24);
+
+            if (isNaN(nights) || nights < 1) {
+                document.getElementById("summary").innerHTML = "Please select valid check-in and check-out dates.";
+                return;
+            }
+            
+            let total = roomPrice * nights;
+            
+            document.querySelectorAll(".service").forEach(service => {
+                if (service.checked) {
+                    total += parseInt(service.value) * (service.value == 2500 ? 1 : nights);
+                }
+            });
+            
+            document.getElementById("summary").innerHTML = `Total Price: ₹${total}`;
+        }
+
+        function confirmBooking() {
+            let clientName = document.getElementById("clientName").value.trim();
+            let contact = document.getElementById("contact").value.trim();
+            let payment = document.getElementById("payment").value;
+            let checkin = document.getElementById("checkin").value;
+            let checkout = document.getElementById("checkout").value;
+
+            if (!clientName || clientName.length < 3) {
+                alert("Please enter a valid full name (at least 3 characters).");
+                return;
+            }
+            
+            if (!/^[0-9]{10}$/.test(contact)) {
+                alert("Please enter a valid 10-digit contact number.");
+                return;
+            }
+            
+            let checkinDate = new Date(checkin);
+            let checkoutDate = new Date(checkout);
+            
+            if (checkinDate >= checkoutDate) {
+                alert("Check-out date must be after check-in date.");
+                return;
+            }
+            
+            alert(`Dear ${clientName}, your booking from ${checkin} to ${checkout} is confirmed. Payment Method: ${payment}. Thank you for choosing GrandVistoria!`);
+        }
+    </script>
+<br><br>
+<hr>
+<img src="E:\Documents\web programming\Hotel booking\Hotel GrandVista (3).png" width="200" height="100" align="left">
+<p>Location</p>
+(022)45678291<br>
+Near HDFC bank, Opp. Colva Football Ground, D-Block, 4th ward.
+st-road, Mumbai<br>
+2025 Hotel GrandVistoria<br> 
+privacy policy<br>
+powered by saee technoiogies
+</body>
+</html>
